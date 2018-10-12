@@ -4,8 +4,11 @@ author: "Eric R. Scott"
 date: "10/11/2018"
 output: ioslides_presentation
 ---
-```{r}
+
+```{r include=FALSE}
 library(emo)
+library(knitr)
+library(tidyverse)
 ```
 
 ## Why bother?
@@ -38,9 +41,9 @@ I like:
 - output
 - manuscript
 
-## Do all data manipulation programatically!
+## Do all data manipulation programatically
 
-Even things like re-formatting data from how you entered it, to how you need it to run a test.  Why?
+Even things like re-formatting data. Why?
 
 - More reproducible
 - Easy to make errors editing data by hand (E.g. Excel suddenly things your column is dates)
@@ -48,14 +51,22 @@ Even things like re-formatting data from how you entered it, to how you need it 
 
 ## File Naming
 
-Recommends:
+```{r echo=FALSE}
+include_graphics("img/filenames.png")
+```
 
-- Descriptive names
-- Avoiding spaces and special characters (what software can't handle spaces these days?)
+
 - Considering alphabetical ordering of numbers
-    + Numbering (01_wrangle-data.Rmd, 02_analyze-data.Rmd)
-    + Dates (2018-10-12_ERGO-data.csv)
+    + Numbering (`01_wrangle-data.Rmd`, `02_analyze-data.Rmd`)
+    + Dates (`2018-10-12_ERGO-data.csv`)
 
+## Tools to help you get organized
+
+Projects in RStudio:
+
+- Automatically set the working directory
+- Easy to switch between projects
+- Integrates well with version control
 
 ## Tools to help you get organized
 
@@ -64,17 +75,88 @@ The `workflowr` `r ji("package")`:
 - creates directory structure with readme and licence
 - sets up version control
 - makes everything into a website
-- nifty, but overkill
+- nifty, but probably overkill
+
+
+## Tools to help you get organized
 
 R for Data Science:
 
-- is a free online book (r4ds.had.co.nz)
-- Great resource for learning more about data wrangling in R
+- ([r4ds.had.co.nz](http://r4ds.had.co.nz))
+- great resource for learning more about data wrangling in R
+- wean yourself off of editing raw data by hand
 
 # Programming
 
+## Write Functions
+
+If you find yourself copying and pasting the same code a lot, consider writing a function.
+
+"But functions are scary!"
+
+**R Studio tip**: '*Extract Function*'
+
+## Make a Package?
+
+If you find yourself writing a lot of functions, condiser making a package.
+
+- "But packages are even scarrier!"
+
+- `usethis` `r ji("package")` and RStudio make it relatively easy.
+
+- You can totally learn to do this!
+
+- Publishing a package along with a paper means that paper gets cited whenever somoene uses your package (ideally).
+
+## Code portability
+
+- Use relative paths ("/img/puppy.jpg" NOT "/Users/Eric/Documents/ERGO/img/puppy.jpg")
+- Better yet, use the `here` `r ji("package")`
+
+```{r}
+library(here)
+read_file(here("data", "sometext.txt"))
+```
+
+- `packrat` `r ji("package")` if updates to packages might break your code
+
 # Reproducible Reports
+
+## RMarkdown
+
+- Allows you to combine prose (markdown), code, and code output in one document
+- Great way to keep an analysis "lab notebook"
+- Creates nifty looking reports in HTML, pdf, Word
+- I made this with it!
+- Not essential to reproducible code, IMO
 
 # Version Control
 
+## Git
+
+- Like "track changes" on steroids
+- Creates a "repository" for your project
+- When you make changes, you "commit" them, commenting on what the changes are.
+- You can also try a different approach in a new "branch"
+- If all you're worried about is backups, **not worth it!**
+
+## GitHub
+
+- Hosts git repositories online
+- Students can get an account that gives private repositories
+- Good for backing-up, sharing, and collaborating on projects
+- Git and GitHub are integrated in RStudio, so you (usually) don't have to do anything from the command line
+
+## Tools to help with Git/GitHub
+
+- [happygitwithr.com](http://happygitwithr.com/)
+- `usethis` `r ji("package")` has `use_git()` and `use_github()`
+
 # Archiving
+
+## Archiving Data and Analyses
+
+- Some journals now require that you archive your data in some way alongside a manuscript submission
+- E.g. Mendeley Data, Dryad, Open Science Framework, Zenodo
+- Gives your data and analyses a citeable DOI
+- If you follow reproducibility advice, this step is relatively painless.
