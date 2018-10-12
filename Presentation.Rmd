@@ -8,7 +8,7 @@ output: ioslides_presentation
 ```{r include=FALSE}
 library(emo)
 library(knitr)
-library(tidyverse)
+library(readr)
 ```
 
 ## Why bother?
