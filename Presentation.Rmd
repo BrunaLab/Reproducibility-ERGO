@@ -1,0 +1,80 @@
+---
+title: "Reproducible Workflows for Ecology Research"
+author: "Eric R. Scott"
+date: "10/11/2018"
+output: ioslides_presentation
+---
+```{r}
+library(emo)
+```
+
+## Why bother?
+
+- For future you
+- For collaborators
+- Because you want people to use and appreciate your data and code
+- Because it is encouraged or required by a journal
+
+# Organizing Projects
+
+## Directory Structure
+
+At minimum:
+
+- data
+- analysis
+- output
+- readme.md
+
+## Directory Structure
+
+I like:
+
+- raw_data
+- wrangling
+- cleaned_data
+- analysis
+- figs
+- output
+- manuscript
+
+## Do all data manipulation programatically!
+
+Even things like re-formatting data from how you entered it, to how you need it to run a test.  Why?
+
+- More reproducible
+- Easy to make errors editing data by hand (E.g. Excel suddenly things your column is dates)
+- Consider making raw data files read-only to help you resist the temptation!
+
+## File Naming
+
+Recommends:
+
+- Descriptive names
+- Avoiding spaces and special characters (what software can't handle spaces these days?)
+- Considering alphabetical ordering of numbers
+    + Numbering (01_wrangle-data.Rmd, 02_analyze-data.Rmd)
+    + Dates (2018-10-12_ERGO-data.csv)
+
+
+## Tools to help you get organized
+
+The `workflowr` `r ji("package")`:
+
+- creates directory structure with readme and licence
+- sets up version control
+- makes everything into a website
+- nifty, but overkill
+
+R for Data Science:
+
+- is a free online book (r4ds.had.co.nz)
+- Great resource for learning more about data wrangling in R
+
+# Programming
+
+# Reproducible Reports
+
+# Version Control
+
+# Archiving
