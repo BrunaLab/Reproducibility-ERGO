@@ -1,162 +1,314 @@
 ---
 title: "Reproducible Workflows for Ecology Research"
-author: "Eric R. Scott"
-date: "10/11/2018"
-output: ioslides_presentation
+author: "Eric Scott"
+institute: "University of Florida"
+date: "2018/10/11 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
 ---
 
-```{r include=FALSE}
-library(emo)
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
 library(knitr)
-library(readr)
+library(tidyverse)
 ```
 
-## Why bother?
+
+# Reproducibility: why bother?
 
 - For future you
+
+--
+
 - For collaborators
+
+--
+
 - Because you want people to use and appreciate your data and code
+
+--
+
 - Because it is encouraged or required by a journal
 
-# Organizing Projects
+--
 
-## Directory Structure
+- Open Science!
 
-At minimum:
+---
+class: center, middle, inverse
 
-- data
-- analysis
-- output
-- readme.md
+# Organizing Files
 
-## Directory Structure
+---
 
+# Directory Structure
+
+At minimum, separate data from code and outputs.
+
+.pull-left[
+Minimally:
+
+`r emo::ji("folder")` data
+
+`r emo::ji("folder")` analysis
+
+`r emo::ji("folder")` output
+
+`r emo::ji("document")` README.md
+]
+
+.pull-right[
 I like:
 
-- raw_data
-- wrangling
-- cleaned_data
-- analysis
-- figs
-- output
-- manuscript
+`r emo::ji("folder")` data
+ - `r emo::ji("folder")` raw_data
+ - `r emo::ji("folder")` cleaned_data
+ - `r emo::ji("document")` README.md
+ 
+`r emo::ji("folder")` wrangling
 
-## Do all data manipulation programatically
+`r emo::ji("folder")` analysis
 
-Even things like re-formatting data. Why?
+`r emo::ji("folder")` docs
+  - `r emo::ji("folder")` figures
+  
+`r emo::ji("document")` README.md
+]
 
-- More reproducible
-- Easy to make errors editing data by hand (E.g. Excel suddenly things your column is dates)
-- Consider making raw data files read-only to help you resist the temptation!
+---
 
-## File Naming
+# File paths in code
+
+If I send you code that starts with the following lines, what are some problems you're going to have?
+
+```r
+setwd("~/Documents/myanalysis")
+df <- read.csv("data/mydata.csv")
+```
+
+--
+
+- Different working directory
+
+--
+
+- "`~`" and "`/`" are linux & macOS things and maybe you are running Windows
+
+--
+
+- Not totally clear where to put `mydata.csv` relative to the script
+---
+
+# File path solutions:
+
+1. Use RStudio Projects—file paths are relative
+  - Working directory is always wherever the `.Rproj` file is by default.
+  
+2. Share entire Project folder when collaborating
+
+2. Use the `here` package:
+
+```{r}
+library(here)
+```
+
+Instead of ...
+```r
+read.csv("/Users/scottericr/Documents/reproducibility-presentation/data/trees.csv")
+```
+... use ...
+```r
+read.csv(here("data", "trees.csv"))
+```
+
+and it will work on any system!
+
+---
+
+# Don't edit raw data!
+
+Never edit raw data directly. Do all data manipulation programatically when possible.
+
+.pull-left[
+- Keeps a record of all changes made to data
+
+- Minimize accidental changes in data
+
+- Consider making raw data files read-only
+
+- Avoid Excel as it greedily converts things to dates!
+
+- If you must edit manually, work on a copy and document the changes
+]
+.pull-right[
+<img src="img/excel_incel_venn.jpeg"/>
+]
+---
+
+# File naming
 
 ```{r echo=FALSE}
 include_graphics("img/filenames.png")
 ```
 
+Considering alphabetical ordering of numbers
+- Numbering (`01_wrangle-data.Rmd`, `02_analyze-data.Rmd`)
+- Dates using ISO format (YYYY-MM-DD) (`2021-05-24_BDFFP-data.csv`)
 
-- Considering alphabetical ordering of numbers
-    + Numbering (`01_wrangle-data.Rmd`, `02_analyze-data.Rmd`)
-    + Dates (`2018-10-12_ERGO-data.csv`)
+---
 
-## Tools to help you get organized
+# Tools to help you get organized
 
-Projects in RStudio:
+The [`workflowr` package](https://jdblischak.github.io/workflowr/) has tools to set up an RStudio Project as a reproducible research compendium.
 
-- Automatically set the working directory
-- Easy to switch between projects
-- Integrates well with version control
-
-## Tools to help you get organized
-
-The `workflowr` `r ji("package")`:
-
-- creates directory structure with readme and licence
+- creates directory structure with readme and license
 - sets up version control
 - makes everything into a website
 - nifty, but probably overkill
 
+---
+class: center, middle, inverse
 
-## Tools to help you get organized
+# Documentation
 
-R for Data Science:
+---
+# Metadata
 
-- ([r4ds.had.co.nz](http://r4ds.had.co.nz))
-- great resource for learning more about data wrangling in R
-- wean yourself off of editing raw data by hand
+Metadata is documentation of data—how, where, when, and by whom it was collected.
+
+Emilio has an entire lecture on metadata, if you want to go into depth.
+
+At minimum, for "rectangular" data (a dataframe):
+
+- What experiment is the dataset from?
+
+- What do the column names mean?
+
+- What are the units?
+
+- What values should be expected and what do they mean?
+
+Put this in a `README.md` or `metadata.md` inside your `data` folder.
+
+---
+# Commenting code
+
+Bad:
+```{r}
+mean(iris[iris$Species=="setosa",]$Sepal.Length*iris[iris$Species=="setosa",]$Sepal.Width)
+```
+
+Good (split into steps, commented, some formatting):
+```{r}
+# subset to just setosa
+iris_setosa <- iris[iris$Species == "setosa", ]
+# calculate an "area" of the sepals
+iris_setosa$square_area <-
+  iris_setosa$Sepal.Length * iris_setosa$Sepal.Width
+mean(iris_setosa$square_area)
+```
+
+**Tip:** You can automatically format your code in RStudio with *Code > Reformat Code*
+---
+# Commenting code
+
+Better (**literate programming** + comments):
+```{r}
+iris %>%
+  filter(Species == "setosa") %>% 
+  # calculate "area" of sepals
+  mutate(square_area = Sepal.Length * Sepal.Width) %>% 
+  summarize(mean_sq_area = mean(square_area))
+```
+One advantage of using the `tidyverse` packages is code that is more human readable, and you often need fewer comments to make it clear.
+
+---
+# RMarkdown
+
+- Allows you to combine prose (markdown), code, and code output in one document
+
+- Great way to keep an analysis "lab notebook"
+
+- Creates nifty looking reports in HTML, pdf, Word using the `knitr` package
+
+RMarkdown is not essential to reproducible code, but I personally find it helps me work though analyses and can eventually be turned into a report, or even into a simpler .R file with `knitr::purl()`
+
+---
+class: center, middle, inverse
 
 # Programming
 
-## Write Functions
+---
 
-If you find yourself copying and pasting the same code a lot, consider writing a function.
+# Don't Repeat Yourself (DRY)
 
-"But functions are scary!"
+If you find yourself writing the same code 3+ times, consider writing a function. Functions let you re-use code and reduce mistakes when copying or updating code.
 
-**R Studio tip**: '*Extract Function*'
-
-## Make a Package?
-
-If you find yourself writing a lot of functions, condiser making a package.
-
-- "But packages are even scarrier!"
-
-- `usethis` `r ji("package")` and RStudio make it relatively easy.
-
-- You can totally learn to do this!
-
-- Publishing a package along with a paper means that paper gets cited whenever somoene uses your package (ideally).
-
-## Code portability
-
-- Use relative paths ("/img/puppy.jpg" NOT "/Users/Eric/Documents/ERGO/img/puppy.jpg")
-- Better yet, use the `here` `r ji("package")`
+To define a function in R, you use the `function()` function:
 
 ```{r}
-library(here)
-read_file(here("data", "sometext.txt"))
+add_ten <- function(x) {
+  x + 10
+}
+add_ten(7)
 ```
 
-- `packrat` `r ji("package")` if updates to packages might break your code
+---
 
-# Reproducible Reports
+# Functions
 
-## RMarkdown
+RStudio can help you get started with *Code > Extract Function*.  
 
-- Allows you to combine prose (markdown), code, and code output in one document
-- Great way to keep an analysis "lab notebook"
-- Creates nifty looking reports in HTML, pdf, Word
-- I made this with it!
-- Not essential to reproducible code, IMO
+It turns this:
+```r
+x <- c(1,5,10)
+y <- 100
 
-# Version Control
+x * 2 + y
+```
 
-## Git
+Into:
 
-- Like "track changes" on steroids
-- Creates a "repository" for your project
-- When you make changes, you "commit" them, commenting on what the changes are.
-- You can also try a different approach in a new "branch"
-- If all you're worried about is backups, **not worth it!**
+```{r}
+my_fun <- function(x, y) {
+  x * 2 + y
+}
+```
 
-## GitHub
+Which let's you reuse code:
+```{r}
+my_fun(x = c(5,6,7), y = 10)
+```
 
-- Hosts git repositories online
-- Students can get an account that gives private repositories
-- Good for backing-up, sharing, and collaborating on projects
-- Git and GitHub are integrated in RStudio, so you (usually) don't have to do anything from the command line
+---
+class: center, middle, inverse
 
-## Tools to help with Git/GitHub
+# Dependencies
 
-- [happygitwithr.com](http://happygitwithr.com/)
-- `usethis` `r ji("package")` has `use_git()` and `use_github()`
+---
+# Package versions
 
-# Archiving
+Your code works now, but what if a key package gets updated or taken off CRAN?
 
-## Archiving Data and Analyses
+The `renv` package keeps track of the specific versions of every package your project uses in a "lockfile"
 
-- Some journals now require that you archive your data in some way alongside a manuscript submission
-- E.g. Mendeley Data, Dryad, Open Science Framework, Zenodo
-- Gives your data and analyses a citeable DOI
-- If you follow reproducibility advice, this step is relatively painless.
+
+<img src="img/preferences.png"/, width=75%>
+
+
+---
+# Create an R Package?
+
+Some folks strongly believe that an R package is the perfect format for a reproducible research compendium.  **I am not one of those people.**
+
+Creating an R package is not hard, but it does require extra effort and learning, and the payoff varies.
+
+**However**, I do think R packages are a great way to share your *functions* and maybe sometimes your *data* if you expect them to be used by a wider community.
+
+Check out https://r-pkgs.org/ if you want to try your hand at building an R package.

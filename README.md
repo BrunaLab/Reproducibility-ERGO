@@ -1,3 +1,3 @@
-# Reproducibility-ERGO
+# reproducibility-presentation
 
-This was a presentation given for the Ecology Reading Group Organization (we know, dumb acronym) at Tufts University.  Based largely on the British Ecological Society's guide to reproducible code: https://www.britishecologicalsociety.org/wp-content/uploads/2017/12/guide-to-reproducible-code.pdf
+This is a presentation given at the Bruna Lab REU lab meeting in summer 2021.  Based largely on the British Ecological Society's guide to reproducible code: https://www.britishecologicalsociety.org/wp-content/uploads/2017/12/guide-to-reproducible-code.pdf
