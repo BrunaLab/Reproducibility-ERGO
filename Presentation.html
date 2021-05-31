@@ -15,7 +15,7 @@ class: center, middle, inverse, title-slide
 # Reproducible Workflows for Ecology Research
 ### Eric Scott
 ### University of Florida
-### 2018/10/11 (updated: 2021-05-28)
+### 2018/10/11 (updated: 2021-05-31)
 
 ---
 
@@ -34,21 +34,34 @@ class: center, middle, inverse, title-slide
 
 --
 
-- Because you want people to use and appreciate your data and code
-
---
-
-- Because it is encouraged or required by a journal
+- Because you want people to use and appreciate your data and code (networking!)
 
 --
 
 - Open Science!
+
+--
+
+- Because it is encouraged or required by a journal
 
 ---
 class: center, middle, inverse
 
 # Organizing Files
 
+---
+# Research Compendium
+A research compendium is a collection of all the digital parts of a research project including:
+
+- data, both raw and intermediate
+- code
+- documentation
+- figures
+- notes
+- protocols
+- reports
+
+Ideally, these should be bundled in a way that makes it clear how all the pieces fit together, and is reproducible by other researchers and your future self.
 ---
 
 # Directory Structure
@@ -62,89 +75,37 @@ Minimally:
 
 📂 analysis
 
-📂 output
+📁 output
 
-📝 README.md
+📄 README.md
 ]
 
 .pull-right[
 I like:
 
 📁 data
- - 📁 raw_data
- - 📁 cleaned_data
- - 📃 README.md
+ - 📂 raw_data
+ - 📂 cleaned_data
+ - 📜 README.md
  
-📂 wrangling
+📁 wrangling
 
-📁 analysis
+📂 analysis
 
-📂 docs
-  - 📁 figures
+📁 docs
+  - 📂 figures
   
-📝 README.md
+📄 README.md
 ]
 
----
-
-# File paths in code
-
-If I send you code that starts with the following lines, what are some problems you're going to have?
-
-```r
-setwd("~/Documents/myanalysis")
-df &lt;- read.csv("data/mydata.csv")
-```
-
---
-
-- Different working directory
-
---
-
-- "`~`" and "`/`" are linux &amp; macOS things and maybe you are running Windows
-
---
-
-- Not totally clear where to put `mydata.csv` relative to the script
----
-
-# File path solutions:
-
-1. Use RStudio Projects—file paths are relative
-  - Working directory is always wherever the `.Rproj` file is by default.
-  
-2. Share entire Project folder when collaborating
-
-2. Use the `here` package:
-
-
-```r
-library(here)
-```
-
-```
-## here() starts at /Users/scottericr/Documents/reproducibility-presentation
-```
-
-Instead of ...
-```r
-read.csv("/Users/scottericr/Documents/reproducibility-presentation/data/trees.csv")
-```
-... use ...
-```r
-read.csv(here("data", "trees.csv"))
-```
-
-and it will work on any system!
 
 ---
 
 # Don't edit raw data!
 
+.pull-left[
 Never edit raw data directly. Do all data manipulation programatically when possible.
 
-.pull-left[
 - Keeps a record of all changes made to data
 
 - Minimize accidental changes in data
@@ -162,46 +123,16 @@ Never edit raw data directly. Do all data manipulation programatically when poss
 
 # File naming
 
-&lt;img src="img/filenames.png" width="1931" /&gt;
+&lt;img src="img/filenames.png"/, width=70%&gt;
 
 Considering alphabetical ordering of numbers
 - Numbering (`01_wrangle-data.Rmd`, `02_analyze-data.Rmd`)
 - Dates using ISO format (YYYY-MM-DD) (`2021-05-24_BDFFP-data.csv`)
 
 ---
-
-# Tools to help you get organized
-
-The [`workflowr` package](https://jdblischak.github.io/workflowr/) has tools to set up an RStudio Project as a reproducible research compendium.
-
-- creates directory structure with readme and license
-- sets up version control
-- makes everything into a website
-- nifty, but probably overkill
-
----
 class: center, middle, inverse
 
 # Documentation
-
----
-# Metadata
-
-Metadata is documentation of data—how, where, when, and by whom it was collected.
-
-Emilio has an entire lecture on metadata, if you want to go into depth.
-
-At minimum, for "rectangular" data (a dataframe):
-
-- What experiment is the dataset from?
-
-- What do the column names mean?
-
-- What are the units?
-
-- What values should be expected and what do they mean?
-
-Put this in a `README.md` or `metadata.md` inside your `data` folder.
 
 ---
 # Commenting code
@@ -262,9 +193,139 @@ One advantage of using the `tidyverse` packages is code that is more human reada
 
 RMarkdown is not essential to reproducible code, but I personally find it helps me work though analyses and can eventually be turned into a report, or even into a simpler .R file with `knitr::purl()`
 
+
+
+
+.center[ [demo] ]
+
+---
+# Metadata
+
+Metadata is documentation of data—how, where, when, and by whom it was collected.
+
+Emilio has an entire lecture on metadata, if you want to go into depth.
+
+At minimum, for "rectangular" data (a dataframe):
+
+- What experiment is the dataset from?
+
+- What do the column names mean?
+
+- What are the units?
+
+- What values should be expected and what do they mean?
+
+Put this in a `README.md` or `metadata.md` inside your `data` folder.
+
+
 ---
 class: center, middle, inverse
 
+# Working Toward Reproducibility
+
+---
+
+# Reproduce on your own machine
+
+- Restart R and run your script from top to bottom to check for reproducibility
+
+- In .R files, *Session &gt; Restart R*, then click the "source" button
+
+- In R Markdown, choose "Restart R and Run all Chunks" from either the "Run" button drop-down or the *Session* menu.
+
+- If one script depends on code in another script, use `source()`
+
+.center[[demo]]
+
+---
+
+# File paths in code
+
+If I send you code that starts with the following lines, what are some problems you're going to have?
+
+```r
+setwd("~/Documents/myanalysis")
+df &lt;- read.csv("data/mydata.csv")
+```
+
+--
+
+- Different working directory
+
+--
+
+- "`~`" and "`/`" are linux &amp; macOS things and maybe you are running Windows
+
+--
+
+- Not totally clear where to put `mydata.csv` relative to the script
+---
+
+# File path solutions:
+
+1. Use RStudio Projects—file paths are relative
+  - Working directory is always wherever the `.Rproj` file is by default.
+  - Share entire Project folder when collaborating
+
+3. Use the `here` package:
+
+
+```r
+library(here)
+```
+
+```
+## here() starts at /Users/scottericr/Documents/reproducibility-presentation
+```
+
+Instead of ...
+```r
+read.csv("/Users/scottericr/Documents/reproducibility-presentation/data/trees.csv")
+```
+... use ...
+```r
+read.csv(here("data", "trees.csv"))
+```
+
+and it will work on any system!
+
+
+---
+# Package versions
+
+.pull-left[
+Your code works now, but what if a key package gets updated or taken off CRAN?  What if your collaborator has a different version of a package installed?
+
+The `renv` package keeps track of the specific versions of every package your project uses in a "lockfile".
+
+Can be initiated at the start, middle, or end of a project.
+]
+.pull-right[
+&lt;img src="img/preferences.png"/, width=100%&gt;
+]
+
+---
+# Docker Container
+
+A Docker Container is basically a self-contained, minimial, emulated computer that can run on any computer. It contains all the software dependencies and system libraries needed for your research compendium (or other software).
+
+The [`holepunch` package](https://karthik.github.io/holepunch/index.html) makes it relatively easy to set up a Docker container for your research compendium. When someone clicks the &lt;img src="https://img.shields.io/badge/launch-binder-579aca.svg?logo=data:image/png;base64,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"/&gt; button on your repository, it opens your exact RStudio session *in a web browser*!
+
+.center[[[demo](https://github.com/karthik/binder-test)]]
+
+---
+# Create an R Package?
+
+Some folks strongly believe that an R package is the perfect format for a reproducible research compendium.  **I am not one of those people.**
+
+Creating an R package is not hard, but it does require extra effort and learning, and the payoff varies.
+
+**However**, I do think R packages are a great way to share your *functions* and maybe sometimes your *data* if you expect them to be used by a wider community.
+
+Check out https://r-pkgs.org/ if you want to try your hand at building an R package.
+
+
+---
 # Programming
 
 ---
@@ -287,6 +348,13 @@ add_ten(7)
 ## [1] 17
 ```
 
+--
+
+The same sorts of rules for file names apply to function names. 
+
+Clear, concise verbs are best— `clean_ha_data()`, `calc_dist()`, `plot_ha_results()`
+
+Alternatively, consider a common prefix to make autocomplete work for you—`ha_clean()`, `ha_calc_dist()`, `ha_plot()`
 ---
 
 # Functions
@@ -319,40 +387,39 @@ my_fun(x = c(5,6,7), y = 10)
 ```
 ## [1] 20 22 24
 ```
+.center[[demo]]
+---
+# Create an R Package
+
+If you find yourself creating **a lot** of functions and using those functions in multiple scripts or projects, consider bundling them into a package.  It doesn't have to be on CRAN! It can be just for you
+
+&lt;!-- add image or something --&gt;
 
 ---
 class: center, middle, inverse
 
-# Dependencies
+# Takeaways
 
 ---
-# Package versions
+# Takeaways
 
-Your code works now, but what if a key package gets updated or taken off CRAN?
+1. Organize your work as a **Research Compendium**
 
-The `renv` package keeps track of the specific versions of every package your project uses in a "lockfile"
+2. Document data, code, and file structure so it is understandable by others and future you
 
+3. Start writing reproducible code using the `here` package and by restarting R often
 
-&lt;img src="img/preferences.png"/, width=75%&gt;
+4. Work toward more widely reproducible code by trying out the `renv` package or maybe even with a Docker file
 
-
----
-# Create an R Package?
-
-Some folks strongly believe that an R package is the perfect format for a reproducible research compendium.  **I am not one of those people.**
-
-Creating an R package is not hard, but it does require extra effort and learning, and the payoff varies.
-
-**However**, I do think R packages are a great way to share your *functions* and maybe sometimes your *data* if you expect them to be used by a wider community.
-
-Check out https://r-pkgs.org/ if you want to try your hand at building an R package.
+5. Avoid repetitive code by writing well-named and documented functions
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
-"countIncrementalSlides": false
+"countIncrementalSlides": false,
+"ratio": "16:9"
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
